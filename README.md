@@ -10,7 +10,6 @@ Becas Digitaliza: DevNet - Ene 20
     - [ ] Crear un menú que indique las opciones que hay.
     - [ ] Como mínimo, incluir: suma, resta, multiplicación, división, exponenciales y raíces cuadradas. Se pueden añadir más funcionalidades.
     - [ ] Podéis usar las funciones y técnicas vistas en las sesiones, o implementar otras que consideréis oportunas. Obviamente, ser eficientes tendrá más nota.
-    - [ ] Crear un menú que indique las opciones que hay.
 
 - [ ] Crear un programa que permita conectarse con el controlador APIC-EM de Cisco
     - [ ] El usuario tendrá que escoger la opción que quiera (no tendrá que especificar la url a mano)
