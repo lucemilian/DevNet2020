@@ -1,74 +1,189 @@
+import sys
+import random
 from time import sleep
+from functools import reduce
 
-starLine = "*************************"
+
+#El texto se ha puesto en ingles con el objetivo de practicar el idioma
+
+#Mensaje de bienvenida
+# starLine = "*************************"
 startMsg = " STARTING MathPy " 
-
 print(startMsg.center(50,"#"))
 
-""" def sumar(data):
-    print("Beginning data processing...")
-    modified_data = data + " that has been modified"
-    sleep(30)
-    print("Data processing finished.")
-    return modified_data
- """
+# Funcion externa para pasar las entradas del usuario a float, ya que se usa en mas de un sitio
+def laLita():
 
+    exeLita=True
+    litaN =[]
+
+    while  (exeLita):
+        valor = input("Give number, or press ENTER: ")
+        print
+        if valor == "":
+            exeLita=False
+
+        else: 
+            try:
+                number = float(valor) 
+                litaN.append(number)
+                print (litaN)
+
+            except ValueError:
+                print ("Error...numbers only!")
+
+    if not litaN:
+        litaN = [random.randint(1,99),random.randint(1,99)]
+        print ("The list is empty...so...EXAMPLE LIST! => ", litaN)
+
+
+    return litaN
+
+# Funcion suma
 def suma():
 
-    print ("my name is: ", suma.__name__)
-    return 0
+    sumaMsg = " I am operation: " + suma.__name__+" "
+    print(sumaMsg.center(40,"*"))
+    # print ("\nI am operation: ", suma.__name__)
 
+    lNums = laLita()                  
+    sValor = sum(lNums)
+
+    print("\nSum of", lNums," es :",sValor,"\n")
+
+    sleep(5)
+    return
+
+# Funcion resta
 def resta():
 
-    print ("my name is: ", resta.__name__)
-    return 0
+    restaMsg = " I am operation: " + resta.__name__+" "
+    print(restaMsg.center(40,"*"))
+    # print ("My name is: ", resta.__name__)
+    
+    lNums = laLita()
+    rValor = reduce(lambda x,y: x - y, lNums)
+    
+    print("\nReduction of", lNums," es :",rValor,"\n")
 
+    sleep(5)
+    return
+
+# Funcion multiplicación
 def multi():
 
-    print ("my name is: ", multi.__name__)
-    return 0
+    multiMsg = " I am operation: " + multi.__name__+" "
+    print(multiMsg.center(40,"*"))
+    # print ("\nI am operation: ", multi.__name__)
 
+    lNums = laLita()
+    mValor = reduce(lambda x,y: x * y, lNums)
+    print("\nProduct of ", lNums," es :",mValor,"\n")
+
+    sleep(5)    
+    return
+
+# Funcion división
 def divi():
 
-    print ("my name is: ", divi.__name__)
-    return 0
+    diviMsg = " I am operation: " + divi.__name__+" "
+    print(diviMsg.center(40,"*"))
+    # print ("\nI am operation: ", divi.__name__)
+
+    lNums = laLita()
+    try:
+        dValor = reduce(lambda x,y: x / y, lNums)
+        print("\nProduct of ", lNums," es :",dValor,"\n")
+    except ZeroDivisionError:
+        print ("There was an attempt to divide by zero, what would you like to do? \n-[0] Remove all zeros and try again \n-[1] Go back to square 1 \n-[2] Give up")
+        vZDE = input("Using numbers, specify the desired operation: ")
+        if vZDE == "0":
+            lNumsZeroless= [i for i in lNums if i != 0]
+            dValorZeroless = reduce(lambda x,y: x / y, lNums)
+            print("\nProduct of ", lNumsZeroless," es :",dValorZeroless,"\n")
+        if vZDE == "1":
+            pass
+        if vZDE == "2":
+            bye()
+        else:
+            print("\nNow i give up...")
+            bye()
+    
+    sleep(5)
+    return
 
 def exponen():
 
-    print ("my name is: ", exponen.__name__)
-    return 0
+    exponenMsg = " I am operation: " + exponen.__name__+" "
+    print(exponenMsg.center(40,"*"))
+    # print ("\nI am operation: ", exponen.__name__)
+
+    print("\nREMINDER: \nThe first number given will be taken as the base. \nThe second will be used as the power \nThe following will be used as the power to the last product \nEssentially: [2,3,4,5] => ((2^3)^4)^5  => 1152921504606846976")
+
+    lNums = laLita()
+    eValor = reduce(lambda x,y: x ** y, lNums)  
+    
+    print("\nProduct of ", lNums," es :",eValor)
+    print("\nHOT TIP: If you see a ""+ij"", then it means the product is imaginary. \n")
+
+    sleep(5)
+    return
 
 def rCuadrada():
 
-    print ("my name is: ", rCuadrada.__name__)
-    return 0
+    rCuadradaMsg = " I am operation: " + rCuadrada.__name__+" "
+    print(rCuadradaMsg.center(40,"*"))
+    # print ("\nI am operation: ", rCuadrada.__name__)
+
+    print("\nREMINDER: \nAll numbers given will be square rooted.")
+
+    lNums = laLita()
+    sqrtValor = [number ** 0.5 for number in lNums]
+    
+    print("\nProduct of ", lNums," es :",sqrtValor)
+
+    sleep(5)
+    return
 
 def NOPE():
+    print ("Didn't understand you, try again! \n")
+    return
 
-    print ("Somenthing went wrong, try again!")
-    return -1
- 
+def bye():
+    sys.exit("GOODBYE!")
+
 switcher = {
         0: suma,
         1: resta,
         2: multi,
         3: divi,
         4: exponen,
-        5: rCuadrada
-        # "NOPE": NOPE
+        5: rCuadrada,
+        6: bye
     }
 
+# El buen main...menú
 def main():
 
-    intExe = 0 
-    print ("¡WELCOME!")
+    mainMsg=" MAIN MENU "
 
-    while intExe == 0:      
-        print ("MathPy has the following operation: \n -[0] ADDITION \n -[1] SUBTRACTION \n -[2] MULTIPLICATION \n -[3] DIVISION \n -[4] EXPONENTIATION \n -[5] SQUARE ROOTING ")
+    while True:         
+        print(mainMsg.center(40,"*"))
+        
+        print ("\nMathPy is capable of the following operations: \n-[0] ADDITION \n-[1] SUBTRACTION \n-[2] MULTIPLICATION \n-[3] DIVISION \n-[4] EXPONENTIATION \n-[5] SQUARE ROOTING \n-[6] SAY ""GOODBYE!""")
         vOpera = input("Using numbers, specify the desired operation: ")
+        
+        print ("\nProcessing...\n")
+        
+        try:
+            func = switcher.get(int(vOpera), NOPE)
+            print(func)
+            func()
 
-        func = switcher.get(int(vOpera), NOPE)
-        func()
+        except ValueError as e:
+            print(e)
+            NOPE()
+        
         pass
     
 
