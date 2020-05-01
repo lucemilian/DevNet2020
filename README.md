@@ -11,9 +11,9 @@ Becas Digitaliza: DevNet - Ene 20
     - [x] Como mínimo, incluir: suma, resta, multiplicación, división, exponenciales y raíces cuadradas. Se pueden añadir más funcionalidades.
     - Podéis usar las funciones y técnicas vistas en las sesiones, o implementar otras que consideréis oportunas. Obviamente, ser eficientes tendrá más nota.
 
-- [ ] Crear un programa que permita conectarse con el controlador APIC-EM de Cisco
-    - [ ] El usuario tendrá que escoger la opción que quiera (no tendrá que especificar la url a mano)
-    - [ ] Añadir, como mínimo, 4 funcionalidades
+- [x] Crear un programa que permita conectarse con el controlador APIC-EM de Cisco
+    - [x] El usuario tendrá que escoger la opción que quiera (no tendrá que especificar la url a mano)
+    - [x] Añadir, como mínimo, 4 funcionalidades
 
 - [ ] Instalar el laboratorio de la máquina virtual el router CSR1000v.
     > Os he añadido el anuncio "Instalación Máquina Virtual - Cisco Cloud Services Router 1000V Series", el cual os describe los pasos a seguir y dónde están los archivos
