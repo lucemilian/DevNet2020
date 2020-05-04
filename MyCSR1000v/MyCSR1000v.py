@@ -4,6 +4,9 @@ import time
 import json
 import urllib3
 from time import sleep
+from netmiko import ConnectHandler
+
+
 
 #El texto se ha puesto en ingles con el objetivo de practicar el idioma
 
@@ -21,6 +24,8 @@ def routerINTget():
 
     fN0Msg = " I am: " + routerINTget.__name__+" "
     print(fN0Msg.center(40,"*"))
+
+    
     
     
     sleep(3)

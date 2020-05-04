@@ -36,6 +36,8 @@ Becas Digitaliza: DevNet - Ene 20
     - [ ] Obtener la tabla de routing y crear una tabla con Identificador (0,1,2...), Red de destino, e Interfaz de salida.
     - [ ] Implementar una petición a 2 módulos de yang diferentes compatibles con nuestro router
 
+>![avatar]: Yang is complicated.
+
 
 - - - -
 
