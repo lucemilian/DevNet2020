@@ -1,7 +1,7 @@
 from ncclient import manager
 import xml.dom.minidom
 
-#Definimo conexión
+#Definimos conexión
 con = manager.connect(host="192.168.56.101",port=830,username="lucemilian",password='devnet2020!',hostkey_verify=False)
 
 def giveALL():
