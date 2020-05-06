@@ -30,13 +30,15 @@ Becas Digitaliza: DevNet - Ene 20
 
 ----
 - [x] Crear un script que permita conectarnos a nuestra Router CSR1000v (bien sea en local o a través del Sandbox) y que, a través de un menú, nos aparezcan una serie de opciones que nos permita realizar las siguientes tareas:
-    - [ ] Obtener un listado de las interfaces del router (indicar, en modo tabla, el nombre de la interfaz, su IP y MAC)
-    - [ ] Crear Interfaces
-    - [ ] Borrar Interfaces
-    - [ ] Obtener la tabla de routing y crear una tabla con Identificador (0,1,2...), Red de destino, e Interfaz de salida.
+    - [#] Obtener un listado de las interfaces del router (indicar, en modo tabla, el nombre de la interfaz, su IP y MAC)
+    - [X] Crear Interfaces
+    - [x] Borrar Interfaces
+    - [X] Obtener la tabla de routing y crear una tabla con Identificador (0,1,2...), Red de destino, e Interfaz de salida.
     - [ ] Implementar una petición a 2 módulos de yang diferentes compatibles con nuestro router
 
->![avatar]: Yang is complicated.
+>![avatar]: Casi Terminado, con problemas:
+  -  No he encontrado la dirrecion MAC en varios modelos yang, pero no aparece al realizar petición GET. Tampoco aparece nada con el modelo "Cisco-IOS-XE-arp".
+  -  Se ha usado más de un metodo para realizar las tareas.
 
 
 - - - -
