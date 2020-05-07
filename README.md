@@ -24,21 +24,25 @@ Becas Digitaliza: DevNet - Ene 20
 - [X] Instalar el laboratorio de la máquina virtual el router CSR1000v.
     > Os he añadido el anuncio "Instalación Máquina Virtual - Cisco Cloud Services Router 1000V Series", el cual os describe los pasos a seguir y dónde están los archivos
 
-    > [Esta actividad no se evaluará como tal, pero la incluyo aquí porque hay que preparar el entorno (o el Sandbox de cisco.developer.com) para poder hacer la tarea siguiente].
+    > [Esta actividad no se evaluará como tal, pero la incluyo aquí porque hay que preparar el entorno (o el Sandbox de cisco.developer.com) para poder hacer la tarea siguiente]
 
 >![avatar]: Más fácil de lo que parecía.
 
 ----
 - [x] Crear un script que permita conectarnos a nuestra Router CSR1000v (bien sea en local o a través del Sandbox) y que, a través de un menú, nos aparezcan una serie de opciones que nos permita realizar las siguientes tareas:
-    - [#] Obtener un listado de las interfaces del router (indicar, en modo tabla, el nombre de la interfaz, su IP y MAC)
+    - [X] Obtener un listado de las interfaces del router (indicar, en modo tabla, el nombre de la interfaz, su IP y MAC)
     - [X] Crear Interfaces
     - [x] Borrar Interfaces
     - [X] Obtener la tabla de routing y crear una tabla con Identificador (0,1,2...), Red de destino, e Interfaz de salida.
-    - [ ] Implementar una petición a 2 módulos de yang diferentes compatibles con nuestro router
+    - [X] Implementar una petición a 2 módulos de yang diferentes compatibles con nuestro router
 
->![avatar]: Casi Terminado, con problemas:
-  -  No he encontrado la dirrecion MAC en varios modelos yang, pero no aparece al realizar petición GET. Tampoco aparece nada con el modelo "Cisco-IOS-XE-arp".
-  -  Se ha usado más de un metodo para realizar las tareas.
+>![avatar]: Terminado:
+  - Se ha usado más de un metodo para realizar las tareas, ya que no se empezaron (ni terminaron) en un orden específico.
+  - Dirreción MAC encontrada en ietf-interfaces:interfaces-state.  
+  - Funcionalidades extra:
+    - Módulo [openconfig-interfaces] para conseguir las distrintas subinterfaces del router
+    - Módulo [Cisco-IOS-XE-native] para conseguir los distintos usuarios del router
+  
 
 
 - - - -

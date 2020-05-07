@@ -64,7 +64,8 @@ def routerINTget():
     print(fN0Msg.center(40,"*"))
     
     #Connection address
-    url = "https://192.168.56.101/restconf/data/ietf-interfaces:interfaces/interface"
+    urlInterfaces = "https://192.168.56.101/restconf/data/ietf-interfaces:interfaces/interface"
+    urlIntState = "https://192.168.56.101/restconf/data/ietf-interfaces:interfaces-state/interface"
 
     #Headers
     headers = {'Accept': 'application/yang-data+json','Content-Type': 'application/yang-data+json'}
@@ -72,27 +73,80 @@ def routerINTget():
     #Authentication
     basic_auth=(username,password)
 
-    resp = requests.get(url, auth=basic_auth,headers=headers, verify=False)
-    print("Request status: ", resp.status_code)
+    rInterfaces = requests.get(urlInterfaces, auth=basic_auth,headers=headers, verify=False)
+    rIntState = requests.get(urlIntState, auth=basic_auth,headers=headers, verify=False)
+    print("Requests statuses: ", rInterfaces.status_code," || ",rIntState.status_code,"\n")
 
-    rJSON=resp.json()
+    rJSON=rInterfaces.json()
+    rJSON_IS=rIntState.json()
+    # print(rJSON_IS)
 
-
-    counter=0
-    dash="-"
-    # show arp
-
-    for i in rJSON['ietf-interfaces:interface']:
-        if counter == 0:
-            print("\n","-".center(60,"-"))
-            print('{:<20s}{:>20s}{:>20s}'.format("Name","IP Address","NetMask"))
-            print("-".center(60,"-"))
-            
-        print('{:<20s}{:>20s}{:>20s}'.format(rJSON['ietf-interfaces:interface'][counter]['name'],
-                                        rJSON['ietf-interfaces:interface'][counter]['ietf-ip:ipv4']['address'][0]['ip'],
-                                        rJSON['ietf-interfaces:interface'][counter]['ietf-ip:ipv4']['address'][0]['netmask']))
-        counter+=1
     
+    dash="-"
+
+    print("-".center(110,"-"))
+    print('{:<20s}{:>20s}{:>20s}{:>20s}{:^10s}{:^10s}{:^10s}'.format("Name","MAC address","IP Address","NetMask","Admin","Oper","Enabled"))
+    print("-".center(110,"-"))
+
+   
+    """     counter=0
+        #Recogemos otros datos sobre las interfaces
+        for m in rJSON_IS['ietf-interfaces:interface']
+        
+            #Sacamos los valores de restconf/data/ietf-interfaces:interfaces-state
+            nameIS=rJSON_IS['ietf-interfaces:interface'][counter]['name']
+            adminStat=rJSON_IS['ietf-interfaces:interface'][counter]['admin-status']
+            operStat=rJSON_IS['ietf-interfaces:interface'][counter]['oper-status']
+            macAddress=rJSON_IS['ietf-interfaces:interface'][counter]['phys-address']
+            counter+=1
+    """
+    
+    counter=0
+    nameInt,enabled,ipAddress,subnetMask=[],[],[],[]
+    adminStat,macAddress,operStat=[],[],[]
+    
+    #Recogemos las interfaces y debido a como ietf-interfaces estrcutura los datos, sus subinterfaces
+    for i in rJSON['ietf-interfaces:interface']:  
+        
+        nameInt.append(rJSON['ietf-interfaces:interface'][counter]['name'])
+        
+        #Buscamos si tiene una dirreccion física, ya que puede ser una subinterfaz
+        #Aunque creo que no haria falta ya que parece haber un indice que los iguala en nivel "if-index"
+        subCount=0
+        sifound=False
+        for l in rJSON_IS['ietf-interfaces:interface']:
+            if nameInt[counter]==rJSON_IS['ietf-interfaces:interface'][subCount]['name']:
+                #Si tiene dir fisica se guarda al mismo nivel
+                adminStat.append(rJSON_IS['ietf-interfaces:interface'][subCount]['admin-status'])
+                operStat.append(rJSON_IS['ietf-interfaces:interface'][subCount]['oper-status'])
+                macAddress.append(rJSON_IS['ietf-interfaces:interface'][subCount]['phys-address'])
+                subCount+=1
+                sifound=True
+                break
+        
+        #Se rellena lo que falte
+        if sifound==False:
+            adminStat.append(dash)
+            operStat.append(dash)
+            macAddress.append(dash)
+        
+        #Intentamos pillar los "KeyWord-Error", por ejemplo, una nueva interfaz no se le a declarado la ip.
+        try:
+            #Sacamos los valores de restconf/data/ietf-interfaces:interfaces
+            enabled.append(rJSON['ietf-interfaces:interface'][counter]['enabled'])
+            ipAddress.append(rJSON['ietf-interfaces:interface'][counter]['ietf-ip:ipv4']['address'][0]['ip'])
+            subnetMask.append(rJSON['ietf-interfaces:interface'][counter]['ietf-ip:ipv4']['address'][0]['netmask'])
+
+        except KeyError as e:
+            #Ponemos como "NULL" en caso de que salte
+            ipAddress.append("NULL")
+            subnetMask.append("NULL")
+            pass
+        
+        #Imprimimos la tabla        
+        print('{:<20s}{:>20s}{:>20s}{:>20s}{:^10s}{:^10s}{:^10b}'.format(nameInt[counter],macAddress[counter],ipAddress[counter],subnetMask[counter],adminStat[counter],operStat[counter],enabled[counter]))
+        counter+=1
+
     
     
     sleep(3)
@@ -119,7 +173,7 @@ def createLOSSH(sshovercli, intType, ipAdd, theMask, description):
     secondC = "ip address "+ipAdd+" "+theMask
     
     #Set de instrucciones de configuracion
-    configCommands= (firstC,secondC,description)
+    configCommands= (firstC,secondC,description,"no shutdown")
     outputConfig = sshovercli.send_config_set(configCommands)
     print("Config output from device:\n{}".format(outputConfig))
 
@@ -252,10 +306,10 @@ def routerROUTING():
     for i in rJSON['ietf-routing:route']:
         if counter == 0:
             print("\n","-".center(60,"-"))
-            print('{:^5s}{:^5s}{:>20s}{:>20s}'.format("#","RP","Destination Prefix","Outgoing Interface"))
+            print('{:^5s}{:^10s}{:>20s}{:>20s}'.format("#","RPref","Destination Prefix","Outgoing Interface"))
             print("-".center(60,"-"))
             
-        print('{:^5d}{:^5d}{:>20s}{:>20s}'.format(counter,
+        print('{:^5d}{:^10d}{:>20s}{:>20s}'.format(counter,
                                         rJSON['ietf-routing:route'][counter]['route-preference'],
                                         rJSON['ietf-routing:route'][counter]['destination-prefix'],
                                         rJSON['ietf-routing:route'][counter]['next-hop']['outgoing-interface']))
@@ -264,6 +318,138 @@ def routerROUTING():
     
     sleep(3)
     return
+
+    #
+        #
+            #
+                #
+            #
+        #
+    #
+
+
+def routerSubINTget():
+
+    fN4Msg = " I am: " + routerSubINTget.__name__+" "
+    print(fN4Msg.center(40,"*"))
+    
+    #Connection address
+    urlInterfaces = "https://192.168.56.101/restconf/data/openconfig-interfaces:interfaces/interface"
+    urlBasSubInt = "https://192.168.56.101/restconf/data/openconfig-interfaces:interfaces/interface="
+    urlAddSubInt ="/subinterfaces/subinterface"
+    uraAddAddSI ="/state"
+    
+    #Headers
+    headers = {'Accept': 'application/yang-data+json','Content-Type': 'application/yang-data+json'}
+    
+    #Authentication
+    basic_auth=(username,password)
+
+    rInterfaces = requests.get(urlInterfaces, auth=basic_auth,headers=headers, verify=False)
+    print("Requests statuses: ", rInterfaces.status_code,"\n")
+
+    rJSON=rInterfaces.json()
+    
+    counter=0
+    dash="-"
+
+    #Listamos las interfaces
+    for i in rJSON['openconfig-interfaces:interface']:
+        if counter == 0:
+            print("-".center(80,"-"))
+            print('{:<20s}{:>20s}{:>40s}'.format("Interface","Subinterface", "Description"))
+            print("-".center(80,"-"))
+
+        nameInt=rJSON['openconfig-interfaces:interface'][counter]['name']
+        
+        tempUrl=urlBasSubInt+nameInt+urlAddSubInt
+        # print(tempUrl)
+        rSubInt = requests.get(tempUrl, auth=basic_auth,headers=headers, verify=False)
+        rJSON_SI=rSubInt.json()
+        # print(rJSON_SI)
+        
+        countSubs=0
+        #Listamos las subinterfaces
+        for x in rJSON_SI['openconfig-interfaces:subinterface'] :
+            
+            name_SI=rJSON_SI['openconfig-interfaces:subinterface'][countSubs]['state']['name']
+            try:
+                desc_SI=rJSON_SI['openconfig-interfaces:subinterface'][countSubs]['state']['description']
+            except KeyError as e:
+                name_SI=rJSON_SI="Null"
+                pass
+            
+                    #Imprimimos la tabla        
+            print('{:<20s}{:>20s}{:>40s}'.format(nameInt,name_SI,desc_SI))
+            countSubs+=1
+        
+        counter+=1
+
+        
+    sleep(3)
+    return
+
+
+
+    #
+        #
+            #
+                #
+            #
+        #
+    #
+
+
+def routerUsersget():
+
+    fN5Msg = " I am: " + routerUsersget.__name__+" "
+    print(fN5Msg.center(40,"*"))
+    
+    requests.packages.urllib3.disable_warnings()
+
+    #Connection address
+    urlUsername = "https://192.168.56.101/restconf/data/Cisco-IOS-XE-native:native/username"
+        
+    #Headers
+    headers = {'Accept': 'application/yang-data+json','Content-Type': 'application/yang-data+json'}
+    
+    #Authentication
+    basic_auth=(username,password)
+
+    rUsernames = requests.get(urlUsername, auth=basic_auth,headers=headers, verify=False)
+    print("Requests statuses: ", rUsernames.status_code,"\n")
+
+    rJSON_U=rUsernames.json()
+    
+    counter=0
+    dash="-"
+    for i in rJSON_U['Cisco-IOS-XE-native:username']:
+        if counter == 0:
+            print("-".center(60,"-"))
+            print('{:<20s}{:^10s}{:^10s}{:>20s}'.format("Name","Privilge", "Encryp","Password"))
+            print("-".center(60,"-"))
+
+        nameU=rJSON_U['Cisco-IOS-XE-native:username'][counter]['name']
+        privilege=rJSON_U['Cisco-IOS-XE-native:username'][counter]['privilege']
+        encryption=rJSON_U['Cisco-IOS-XE-native:username'][counter]['password']['encryption']
+        passU=rJSON_U['Cisco-IOS-XE-native:username'][counter]['password']['password']
+
+        print('{:<20s}{:^10d}{:^10s}{:>20s}'.format(nameU,privilege,encryption,passU))
+        
+        counter+=1
+        
+    sleep(3)
+    return
+
+
+
+    #
+        #
+            #
+                #
+            #
+        #
+    #
 
 
 # Funcionalidad para realizar petición a 2 módulos de yang diferentes
@@ -274,8 +460,7 @@ def routerTOyang():
     
     
     
-    sleep(3)
-    return
+
 
 
 
@@ -289,8 +474,9 @@ switcher = {
         2: routerINTmake,
         3: routerINTdestroy,
         4: routerROUTING,
-        5: routerTOyang,
-        6: bye
+        5: routerSubINTget,
+        6: routerUsersget,
+        7: bye
     }
 
 # El buen main...menú
@@ -308,8 +494,9 @@ def main():
         "\n-[2] Create interface",
         "\n-[3] Delete interface",
         "\n-[4] Configure routing table",
-        "\n-[5] Call other modules to YANGOUT",
-        "\n-[6] EXIT")
+        "\n-[5] Get list of router's subinterfaces",
+        "\n-[6] Get list of router's users",
+        "\n-[7] EXIT")
         vOpera = input("Using numbers, specify the desired operation: ")
         
         print ("\nProcessing...\n")
