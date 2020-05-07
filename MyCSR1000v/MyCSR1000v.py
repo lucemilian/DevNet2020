@@ -88,19 +88,6 @@ def routerINTget():
     print('{:<20s}{:>20s}{:>20s}{:>20s}{:^10s}{:^10s}{:^10s}'.format("Name","MAC address","IP Address","NetMask","Admin","Oper","Enabled"))
     print("-".center(110,"-"))
 
-   
-    """     counter=0
-        #Recogemos otros datos sobre las interfaces
-        for m in rJSON_IS['ietf-interfaces:interface']
-        
-            #Sacamos los valores de restconf/data/ietf-interfaces:interfaces-state
-            nameIS=rJSON_IS['ietf-interfaces:interface'][counter]['name']
-            adminStat=rJSON_IS['ietf-interfaces:interface'][counter]['admin-status']
-            operStat=rJSON_IS['ietf-interfaces:interface'][counter]['oper-status']
-            macAddress=rJSON_IS['ietf-interfaces:interface'][counter]['phys-address']
-            counter+=1
-    """
-    
     counter=0
     nameInt,enabled,ipAddress,subnetMask=[],[],[],[]
     adminStat,macAddress,operStat=[],[],[]
@@ -452,19 +439,6 @@ def routerUsersget():
     #
 
 
-# Funcionalidad para realizar petición a 2 módulos de yang diferentes
-def routerTOyang():
-
-    fN4Msg = " I am: " + routerTOyang.__name__+" "
-    print(fN4Msg.center(40,"*"))
-    
-    
-    
-
-
-
-
-
 def bye():
     sys.exit("Exiting...")
 
@@ -490,7 +464,7 @@ def main():
         
     
         print ("\n-[0] RESET THE CLOCK",
-        "\n-[1] Get list of router's interfaces",
+        "\n-[1] Get list of router's interfaces and subinterfaces",
         "\n-[2] Create interface",
         "\n-[3] Delete interface",
         "\n-[4] Configure routing table",
