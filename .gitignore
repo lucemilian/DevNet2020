@@ -1,1 +1,7 @@
-MyCSR1000v/tests/*
+MyCSR1000v/tests/Cisco-IOS-XE-native_usernames.py
+MyCSR1000v/tests/OpenConf SubINT test.py
+MyCSR1000v/tests/testNetmiko.py
+MyCSR1000v/tests/testRCjson.py
+MyCSR1000v/tests/testYang.py
+MyCSR1000v/tests/testYang.xml
+MyCSR1000v/tests/what.py
